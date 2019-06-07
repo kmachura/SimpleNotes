@@ -2,11 +2,47 @@ package pl.kmachura.simplenotes.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@Entity
+@Table(name = "simple_notes")
+@EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = {"creationDate", "modificationDate"}, allowGetters = true)
 public class SimpleNote {
-	private int id;
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	private int id; 
+	
+	@NotBlank
 	private String title;
+	
+	@NotBlank
 	private String content;
+	
+	@Column(name="creation_date", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
 	private Date creationDate;
+	
+	@Column(name="modification_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
 	private Date modificationDate;
 	
 	public int getId() {
@@ -46,26 +82,6 @@ public class SimpleNote {
 	
 	public void setModificationDate(Date modificationDate) {
 		this.modificationDate = modificationDate;
-	}
-	
-	public SimpleNote() {}
-	
-	public SimpleNote(int id, String title, String content, Date creationDate, Date modificationDate) {
-		setId(id);
-		setTitle(title);
-		setContent(content);
-		setCreationDate(creationDate);
-		setModificationDate(modificationDate);
-	}
-
-	@Override
-	public String toString() {
-		return id + " " + title + " " + content + " " + creationDate
-				+ " " + modificationDate;
-	}
-	
-	
-	
-	
+	}	
 	
 }
